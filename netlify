@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+  echo "ERROR: you must execute this script from the OpenShift Git repository." 1>&2
+  exit 1
+fi
+
+read -p 'PR#' PR_NUMBER
+read -p 'Base branch: ' BASE_REF
+PR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+generate_pr_data()
+{
+  cat <<EOF
+    {
+    "PR_BRANCH": "$PR_BRANCH",
+    "BASE_REPO": "openshift/openshift-docs",
+    "PR_NUMBER": "$PR_NUMBER",
+    "USER_NAME": "amolnar-rh",
+    "BASE_REF": "$BASE_REF",
+    "REPO_NAME": "amolnar-rh/openshift-docs"
+    }
+EOF
+}
+
+curl -H 'Content-Type: application/json' --request POST --data "$(generate_pr_data)" https://eoa6vg2jiwjbnh6.m.pipedream.net
