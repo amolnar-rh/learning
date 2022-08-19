@@ -7,9 +7,16 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
   exit 1
 fi
 
-read -p 'PR#' PR_NUMBER
-read -p 'Base branch: ' BASE_REF
 PR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+PR_NUMBER="$(gh pr list -H $PR_BRANCH --json number | jq -r '.[][]')"
+PR_COUNT="$(gh pr list -H $PR_BRANCH -s open | wc -l)"
+AUTHOR="$(gh pr view $PR_NUMBER --json author | jq -r '.[][]')"
+BASE_REF="$(gh pr view $PR_NUMBER --json baseRefName | jq -r '.[]')"
+
+if [ $PR_COUNT -gt 1 ]; then
+  echo "ERROR: there are multiple PRs referencing your working branch." 1>&2
+  exit 1
+fi
 
 generate_pr_data()
 {
@@ -18,9 +25,9 @@ generate_pr_data()
     "PR_BRANCH": "$PR_BRANCH",
     "BASE_REPO": "openshift/openshift-docs",
     "PR_NUMBER": "$PR_NUMBER",
-    "USER_NAME": "amolnar-rh",
+    "USER_NAME": "$AUTHOR",
     "BASE_REF": "$BASE_REF",
-    "REPO_NAME": "amolnar-rh/openshift-docs"
+    "REPO_NAME": "$AUTHOR/openshift-docs"
     }
 EOF
 }
