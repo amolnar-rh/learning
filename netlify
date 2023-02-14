@@ -10,10 +10,10 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
 fi
 
 PR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-PR_NUMBER="$(gh pr list -H $PR_BRANCH --json number | jq -r '.[][]')"
+PR_NUMBER="$(gh pr list -H $PR_BRANCH --json number | jq -r '.[0].number')"
 PR_COUNT="$(gh pr list -H $PR_BRANCH -s open | wc -l)"
 AUTHOR="$(gh pr view $PR_NUMBER --json author | jq -r '.author.login')"
-BASE_REF="$(gh pr view $PR_NUMBER --json baseRefName | jq -r '.[]')"
+BASE_REF="$(gh pr view $PR_NUMBER --json baseRefName | jq -r '.baseRefName')"
 
 if [ $PR_COUNT -gt 1 ]; then
   echo "ERROR: there are multiple PRs referencing your working branch." 1>&2
