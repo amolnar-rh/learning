@@ -12,7 +12,7 @@ fi
 PR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PR_NUMBER="$(gh pr list -H $PR_BRANCH --json number | jq -r '.[][]')"
 PR_COUNT="$(gh pr list -H $PR_BRANCH -s open | wc -l)"
-AUTHOR="$(gh pr view $PR_NUMBER --json author | jq -r '.[][]')"
+AUTHOR="$(gh pr view $PR_NUMBER --json author | jq -r '.author.login')"
 BASE_REF="$(gh pr view $PR_NUMBER --json baseRefName | jq -r '.[]')"
 
 if [ $PR_COUNT -gt 1 ]; then
