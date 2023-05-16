@@ -1,3 +1,0 @@
-myname=Joe Doe
-myage=38
-mygender=secret
