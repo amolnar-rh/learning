@@ -1,6 +1,5 @@
-import random
-
 def fizzbuzz(num):
+    num = int(num)
     for i in range(1, num+1):
         if (i % 15) == 0:
             print("FizzBuzz!!!")
@@ -11,13 +10,9 @@ def fizzbuzz(num):
         else:
             print(i)
 
-spare_number = random.randint(1,100)
+number = input("Give me a positive number: ")
 
-while True:
-    try:
-        number = int(input("Give me a positive number: "))
-        fizzbuzz(number)
-        break
-    except ValueError:
-        print(f"This is not a valid number, please try again.")
+while str.isdecimal(number) == False:
+    number = input("Give me any number: ")
 
+fizzbuzz(number)
